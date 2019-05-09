@@ -6,8 +6,6 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.1.0.0/16
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
       Tags:
       - Key: Name
         Value: !Sub ${AWS::StackName}-VPC
@@ -26,7 +24,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.1.10.0/24
-      AvailabilityZone: !Select [ 0, !GetAZs ]  
+      AvailabilityZone: !Select [ 0, !GetAZs ] 
       Tags:
       - Key: Name
         Value: !Sub "${AWS::StackName}-Public-A"
@@ -81,16 +79,16 @@ Resources:
       Tags:
       - Key: Name
         Value: Private
-  PrivateRoute1: # Private route routes to NatGateway
+  PrivateRoute1: 
     Type: AWS::EC2::Route
     DependsOn: AttachGateway
     Properties:
       RouteTableId: !Ref PrivateRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      NatGatewayId: !Ref NatGateway 
+      NatGatewayId: !Ref NatGateway # NatGateway must be part of the private subnet route table
 
-  # Associate the public subnets to public route tables, 
-  # and attach the private subnets to private route tables:    
+  # Associate the public subnets to public route tables and 
+  # private subnets to private route tables:    
   PublicSubnetARouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
